@@ -1,55 +1,91 @@
-import pandas as pd
+import openpyxl as ox
 import os
-from openpyxl import load_workbook
-import xlsxwriter
-from shutil import copyfile
+import csv
+import pandas
+import pandas as pd
+import glob
 
-file=input('File Path: ')
-extension = os.path.splitext(file)[1]
-filename = os.path.splitext(file)[0]
-pth=os.path.dirname(file)
-newfile=os.path.join(pth,filename+'_2'+extension)
-df=pd.read_excel(file)
-colpick=input('Select Column: ')
-cols=list(set(df[colpick].values))
 
-def sendtofile(cols):
-    for i in cols:
-        df[df[colpick] == i].to_excel("{}/{}.xlsx".format(pth, i), sheet_name=i, index=False)
-    print('\nCompleted')
-    print('Thanks for using this program.')
-    return
+# df=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.csv')
+# # read_file.to_excel(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.xlsx')
+# #
+# #
+# #
+# # book=ox.load_workbook(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.xlsx')
+# # sheet =book["Sheet1"]
+# #
+# # print(sheet["E2"].value)
+# #
+# s=os.getcwd()
+# print(s)
+# p=os.chdir(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File')
+# # print(os.getcwd())
+# # for xls in os.listdir():
+# #     if xls.startswith("7" or "11" or "13"):
+# #        print(xls)
+# #
+# #
+# # list=[7-BW.csv, 7-DR.csv,7-HE.csv, 7-ON.csv, 7-S1.csv, 7-SI.csv, 7-SV.csv]
+# #
+# #
+# # read_file=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.csv')
+# # read_file.to_excel(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.xlsx')
+# print(df)
+#
+# #skip rows =1 will not read rows you ask or header=1 row
+# add header header=None, names["ex1", "ex2", "ex3"]
 
-def sendtosheet(cols):
-    copyfile(file, newfile)
-    for j in cols:
-        writer = pd.ExcelWriter(newfile, engine='openpyxl')
-        for myname in cols:
-            mydf = df.loc[df[colpick] == myname]
-            mydf.to_excel(writer, sheet_name=myname, index=False)
-        writer.save()
 
-    print('\nCompleted')
-    print('Thanks for using this program.')
-    return
 
-print('You data will split based on these values {} and create {} files or sheets based on next selection. If you are ready to proceed please type "Y" and hit enter. Hit "N" to exit.'.format(', '.join(cols),len(cols)))
-while True:
-    x=input('Ready to Proceed (Y/N): ').lower()
-    if x == 'y':
-        while True:
-            s = input('Split into different Sheets or File (S/F): ').lower()
-            if s == 'f':
-                sendtofile(cols)
-                break
-            elif s == 's':
-                sendtosheet(cols)
-                break
-            else: continue
-        break
-    elif x=='n':
-        print('\nThanks for using this program.')
-        break
 
-    else: continue
 
+
+
+
+
+
+
+
+############################################CREATE DATA FRAMES#############################################################
+
+# bw7=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-BW.csv')
+# bw10=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\10-BW.csv')
+# bw11=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\11-BW.csv')
+# frame = [bw7, bw10, bw11]
+# bw_master = pd.concat(frame)
+
+
+
+si7=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-SI.csv')
+si13=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\13-SI.csv')
+frame = [si7, si13]
+sisales_master = pd.concat(frame)
+
+on7=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-ON.csv')
+on13=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\13-ON.csv')
+frame=[on7, on13]
+on_sales_master = pd.concat(frame)
+
+sv7=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\7-SV.csv')
+sv13=pd.read_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\13-SV.csv')
+frame = [sv7, sv13]
+sv_sales_master = pd.concat(frame)
+
+
+
+################################################ FILE OUTPUTS ##########################################################
+
+#bw_master.to_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\BW_Master.csv', index = False)
+#si_master.to_csv(r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\SI_Master.csv', index = False)
+path = r'C:\Users\Joshua Kemperman\OneDrive - Enchante Living\desktop enchliving\WH File\Master.xlsx'
+
+fileName = pd.ExcelWriter(path, engine = 'xlsxwriter')
+
+# bw_master.to_excel(fileName, sheet_name='BW', index = False)
+si_master.to_excel(fileName, sheet_name='SI Sales', index = False)
+on_master.to_excel(fileName, sheet_name='ON Sales', index = False)
+sv_master.to_excel(fileName, sheet_name='SV Sales', index = False)
+
+
+
+fileName.save()
